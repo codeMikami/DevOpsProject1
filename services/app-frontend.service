@@ -1,0 +1,16 @@
+[Unit]
+Description=Front End App
+After=network.target app-backend.service
+Requires=app-install.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/app
+Environment="PATH=/opt/app/.venv/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/npm start
+User=user
+Group=user
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

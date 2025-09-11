@@ -1,0 +1,13 @@
+[Unit]
+Description=Flask-React App Dependencies
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/app
+ExecStart=/bin/bash -c "cd backend &&  python3 -m venv .venv && source .venv/bin/activate && pip install -r requirement>User=user
+Group=user
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
