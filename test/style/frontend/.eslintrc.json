@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended",
+    "plugin:@testing-library/react/recommended"
+  ],
+  "plugins": [
+    "react",
+    "@testing-library/react"
+  ],
+  "rules": {
+    "react/prop-types": "off"
+  }
+}

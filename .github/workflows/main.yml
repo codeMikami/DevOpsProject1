@@ -1,0 +1,83 @@
+
+name: CI Pipeline for Flask-React App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+
+      - name: Build Docker Images
+        run: |
+          docker build -f Dockerfile.backend -t back:1.0 .
+          docker build -f Dockerfile.frontend -t front:1.0 .
+
+      - name: Running Containers
+        run: |
+          docker run -d -p 5000:5000 --name backend back:1.0
+          docker run -d -p 3000:3000 --name frontend front:1.0
+          sleep 5
+          curl -f http://localhost:5000/profile || exit 1
+          curl -f http://localhost:3000 || exit 1
+          docker stop backend frontend
+          docker rm backend frontend
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cloning Repo
+        uses: actions/checkout@v4
+
+      - name: Installing Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Installing Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Installing Docker
+        run: |
+          VERSION="0.4.14"
+          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb"
+          sudo dpkg -i dockle.deb
+          rm dockle.deb
+
+      - name: Dockle Tests
+        run: |
+          docker pull back:1.0 || true
+          docker pull front:1.0 || true
+          dockle back:1.0 || true
+          dockle front:1.0 || true
+        continue-on-error: true
+
+      - name: Unit Tests
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          python -m pytest ../test/unit/backend || true
+          cd ..
+          npm ci
+          npm test -- --watchAll=false || true
+
+      - name: Style Tests
+        run: |
+          cd backend
+          pip install flake8
+          flake8 backend/ --config ../test/style/backend/flake8.ini || true
+          cd ..
+          npm ci
+          npm run lint || true

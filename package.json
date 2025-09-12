@@ -18,8 +18,19 @@
     "backend": "cd backend && .venv/bin/flask run --no-debugger",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint test/unit/frontend test/style/frontend src",
     "eject": "react-scripts eject"
   },
+
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-@testing-library/react": "^0.0.2"
+  },
+
   "eslintConfig": {
     "extends": [
       "react-app",
