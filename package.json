@@ -22,16 +22,10 @@
     "backend": "cd backend && .venv/bin/flask run --no-debugger",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "lint": "eslint test/unit/frontend test/style/frontend src",
+    "lint": "eslint src test/unit/frontend test/style/frontend",
     "eject": "react-scripts eject"
   },
   "devDependencies": {},
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -5,15 +5,20 @@
     "jest": true
   },
   "extends": [
+    "react-app",
+    "react-app/jest",
     "airbnb",
     "plugin:react/recommended",
-    "plugin:@testing-library/react/recommended"
+    "plugin:testing-library/react"
   ],
   "plugins": [
     "react",
-    "@testing-library/react"
+    "testing-library"
   ],
   "rules": {
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   }
 }
