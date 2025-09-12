@@ -12,15 +12,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Clone Repo
+      - name: Клонировать репозиторий
         uses: actions/checkout@v4
 
-      - name: Build Docker Images
+      - name: Собрать Docker-образы
         run: |
           docker build -f Dockerfile.backend -t back:1.0 .
           docker build -f Dockerfile.frontend -t front:1.0 .
 
-      - name: Running Containers
+      - name: Проверить запуск контейнеров
         run: |
           docker run -d -p 5000:5000 --name backend back:1.0
           docker run -d -p 3000:3000 --name frontend front:1.0
@@ -34,29 +34,29 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Cloning Repo
+      - name: Клонировать репозиторий
         uses: actions/checkout@v4
 
-      - name: Installing Python
+      - name: Установить Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Installing Node.js
+      - name: Установить Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '16'
           cache: 'npm'
 
-      - name: Installing Docker
+      - name: Установить Dockle
         run: |
           VERSION="0.4.14"
           curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb"
           sudo dpkg -i dockle.deb
           rm dockle.deb
 
-      - name: Dockle Tests
+      - name: Проверить образы с Dockle
         run: |
           docker pull back:1.0 || true
           docker pull front:1.0 || true
@@ -64,7 +64,7 @@ jobs:
           dockle front:1.0 || true
         continue-on-error: true
 
-      - name: Unit Tests
+      - name: Юнит-тесты (var tests)
         run: |
           cd backend
           pip install -r requirements.txt
@@ -73,7 +73,7 @@ jobs:
           npm ci
           npm test -- --watchAll=false || true
 
-      - name: Style Tests
+      - name: Тесты стиля (style tests)
         run: |
           cd backend
           pip install flake8
