@@ -49,7 +49,21 @@ jobs:
           node-version: '16'
           cache: 'npm'
 
-      - name: Unit Tests)
+      - name: Install Dockle
+        run: |
+          VERSION="0.4.14"
+           curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${VERSION}/dockle_${VERSION}_Linux-64bit.deb"
+           sudo dpkg -i dockle.deb
+           rm dockle.deb
+
+      - name: Dockle Test
+        run : |
+          docker pull mikamithejudgement/flask-react-back:latest || true
+          docker pull mikamithejudgement/flask-react-front:latest || true
+          dockle --exit-code 1 --exit-level FATAL mikamithejudgement/flask-react-back:latest
+          dockle --exit-code 1 --exit-level FATAL mikamithejudgement/flask-react-front:latest
+
+      - name: Unit Tests
         run: |
           cd backend
           pip install -r requirements.txt
