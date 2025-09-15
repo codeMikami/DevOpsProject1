@@ -80,3 +80,23 @@ jobs:
           cd ..
           npm ci
           npm run lint || true
+
+  deploy:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repo
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd DevOpsProject/
+            git pull origin main
+            chmod +x service-deploy.sh
+            sudo ./service-deploy.sh          
