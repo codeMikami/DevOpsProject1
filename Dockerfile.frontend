@@ -1,16 +1,23 @@
-
 FROM node:18-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+RUN apk add --no-cache curl && \
+    npm install && \
+    rm -rf /var/cache/apk/* && \
+    adduser -D appuser && \
+    chown -R appuser:appuser /app
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
 COPY . .
 
+USER appuser
+
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:3000/ || exit 1
 
 CMD ["npm", "start"]
