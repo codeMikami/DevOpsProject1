@@ -82,6 +82,7 @@ jobs:
           npm run lint || true
 
   deploy:
+    if: github.event_name == 'workflow_dispatch'
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
